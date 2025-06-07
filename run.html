@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no,email=no,address=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="x5-page-mode" content="app">
+    <meta name="browsermode" content="application">
+    <meta name="full-screen" content="yes">
+    <meta name="screen-orientation" content="portrait">
+    <title>宫果果的进步表</title>
+    <style>
+        /* 重写CSS，采用更简约、卡片化、柔和配色风格，提升界面舒适度和现代感，保留所有原有功能 */
+        :root {
+            --vangogh-blue: #355c7d;
+            --vangogh-yellow: #ffe066;
+            --vangogh-green: #6a994e;
+            --vangogh-orange: #f8961e;
+            --vangogh-darkblue: #264653;
+            --vangogh-cream: #f6e7cb;
+            --soft-bg: #f8f9fa;
+            --card-bg: #fff;
+            --border-radius: 16px;
+            --shadow: 0 2px 16px rgba(53,92,125,0.08);
+            --input-bg: #f3f6f9;
+            --input-border: #e0e3e7;
+        }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(120deg, #355c7d 0%, #6a994e 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+        .bg-stars {
+            display: none !important;
+        }
+        .container {
+            max-width: 480px;
+            margin: 32px auto;
+            background: linear-gradient(120deg, rgba(255,224,102,0.92) 0%, rgba(53,92,125,0.92) 100%);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 28px 18px 18px 18px;
+            position: relative;
+            z-index: 1;
+        }
+        h1 {
+            text-align: center;
+            color: var(--vangogh-blue);
+            margin-bottom: 18px;
+            letter-spacing: 2px;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+        #dateSection {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        #progressDate {
+            font-size: 1.1em;
+            color: var(--vangogh-blue);
+            border: none;
+            background: var(--input-bg);
+            border-radius: 8px;
+            padding: 6px 12px;
+            box-shadow: 0 1px 4px rgba(53,92,125,0.04);
+            font-family: inherit;
+            font-weight: 500;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            background: none;
+        }
+        th, td {
+            padding: 10px 6px;
+            text-align: left;
+            background: none;
+        }
+        th {
+            color: #333;
+            font-size: 1em;
+            font-weight: 600;
+            background: none;
+            border-radius: 8px 8px 0 0;
+        }
+        tr {
+            background: linear-gradient(90deg, rgba(246,231,203,0.7) 0%, rgba(53,92,125,0.07) 100%);
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(53,92,125,0.04);
+            transition: box-shadow 0.2s;
+        }
+        tr:hover {
+            box-shadow: 0 4px 16px rgba(53,92,125,0.10);
+        }
+        .center {
+            text-align: center;
+        }
+        .vangogh-dot {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        input[type="text"], input[type="number"] {
+            width: 90%;
+            padding: 7px 8px;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            background: var(--input-bg);
+            font-size: 1em;
+            margin-bottom: 4px;
+            transition: border 0.2s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, #progressDate:focus {
+            border: 1.5px solid var(--vangogh-blue);
+            outline: none;
+        }
+        .add-btn, .save-btn {
+            background: var(--vangogh-blue);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 22px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 4px rgba(53,92,125,0.08);
+            margin-top: 4px;
+        }
+        .add-btn:hover, .save-btn:hover {
+            background: var(--vangogh-darkblue);
+        }
+        .save-btn {
+            display: block;
+            width: 100%;
+            margin: 24px 0 0 0;
+            font-size: 1.1em;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .chart-section {
+            margin: 12px 0 6px 0;
+            background: linear-gradient(90deg, rgba(106,153,78,0.13) 0%, rgba(248,150,30,0.13) 100%);
+            border-radius: 12px;
+            padding: 12px 6px 8px 6px;
+            box-shadow: 0 1px 6px rgba(53,92,125,0.04);
+        }
+        .chart-title {
+            font-weight: bold;
+            color: var(--vangogh-blue);
+            margin-bottom: 6px;
+            font-size: 1em;
+        }
+        .subject-list, .entertain-list {
+            margin-bottom: 8px;
+        }
+        .subject-item, .entertain-item {
+            margin-bottom: 4px;
+            font-size: 0.98em;
+        }
+        .remove-btn {
+            background: #fff0;
+            color: #d9534f;
+            border: none;
+            font-size: 1.1em;
+            margin-left: 4px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+        #skincare-progress-msg {
+            margin-top: 4px;
+            color: var(--vangogh-blue);
+            font-weight: 600;
+            font-size: 0.98em;
+        }
+        @media (max-width: 600px) {
+            .container {
+                max-width: 99vw;
+                padding: 4vw 2vw 4vw 2vw;
+            }
+            h1 {
+                font-size: 1.1em;
+            }
+            .chart-section {
+                padding: 8px 2px 6px 2px;
+            }
+            .save-btn {
+                font-size: 1em;
+                padding: 10px 0;
+            }
+            input[type="text"], input[type="number"] {
+                width: 98%;
+                font-size: 1em;
+            }
+        }
+        /* 让表格在手机端可左右滑动 */
+        .table-scroll {
+            overflow-x: auto;
+        }
+        /* 让按钮更适合触摸 */
+        button, input[type="checkbox"] {
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 宫果果的进步表 <span style="font-size:0.7em;">🦄✨🎨</span></h1>
+        <div id="dateSection">
+            <input type="datetime-local" id="progressDate" />
+        </div>
+        <form id="progressForm">
+            <div class="table-scroll">
+            <table>
+                <tr>
+                    <th>任务内容</th>
+                    <th class="center">完成/记录</th>
+                </tr>
+                <tr>
+                    <td><span class="vangogh-dot dot-blue"></span>1. 按时洗脸并进行基础护肤
+                        <div style="margin-top:8px; display:flex; gap:12px; align-items:center;">
+                            <label style="margin:0; font-size:0.98em;">
+                                <input type="checkbox" id="skincare-morning" onchange="updateSkincareProgress()"> 上午
+                            </label>
+                            <label style="margin:0; font-size:0.98em;">
+                                <input type="checkbox" id="skincare-afternoon" onchange="updateSkincareProgress()"> 下午
+                            </label>
+                            <span id="skincare-progress-msg"></span>
+                        </div>
+                    </td>
+                    <td class="center">
+                        <button type="button" class="add-btn" onclick="toggleCheck('task1')" id="btn-task1">未完成</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="vangogh-dot dot-yellow"></span>2. 每日有氧运动不低于三十分钟
+                        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                            <input type="text" id="sportName" placeholder="运动项目" style="width:90px;">
+                            <input type="number" id="sportTime" placeholder="时长(分钟)" min="0" step="1" style="width:90px;" oninput="updateSportProgress()">
+                        </div>
+                    </td>
+                    <td class="center">
+                        <button type="button" class="add-btn" onclick="toggleCheck('task2')" id="btn-task2">未完成</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:top;">
+                        <span class="vangogh-dot dot-green"></span>3. 日常学习八小时记录
+                        <div class="chart-section">
+                            <div class="chart-title">学习科目时长分布</div>
+                            <div class="subject-list" id="subjectList"></div>
+                            <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+                                <input type="text" id="subjectName" placeholder="科目名" style="width:80px;">
+                                <input type="number" id="subjectTime" placeholder="时长(小时)" min="0" step="0.1" style="width:80px;">
+                                <button type="button" class="add-btn" onclick="addSubject()">添加</button>
+                            </div>
+                            <canvas id="studyChart" width="220" height="220"></canvas>
+                        </div>
+                    </td>
+                    <td class="center" style="vertical-align:top;">
+                        <input type="text" id="studyTime" placeholder="如：7.5 小时">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:top;">
+                        <span class="vangogh-dot dot-orange"></span>4. 游戏娱乐时间记录（包括刷视频）
+                        <div class="chart-section">
+                            <div class="chart-title">娱乐类型时长分布</div>
+                            <div class="entertain-list" id="entertainList"></div>
+                            <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+                                <input type="text" id="entertainName" placeholder="娱乐类型" style="width:80px;">
+                                <input type="number" id="entertainTime" placeholder="时长(小时)" min="0" step="0.1" style="width:80px;">
+                                <button type="button" class="add-btn" onclick="addEntertainment()">添加</button>
+                            </div>
+                            <canvas id="entertainChart" width="220" height="220"></canvas>
+                        </div>
+                    </td>
+                    <td class="center" style="vertical-align:top;">
+                        <input type="text" id="gameTime" placeholder="如：2 小时">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="vangogh-dot dot-darkblue"></span>5. 睡眠时间记录</td>
+                    <td class="center"><input type="text" id="sleepTime" placeholder="如：8 小时"></td>
+                </tr>
+            </table>
+            </div>
+            <div class="center" style="margin:18px 0 0 0;">
+                <button type="button" class="save-btn" onclick="saveProgress()">保存今日进度</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        // 引入 html2canvas 脚本
+        function loadHtml2Canvas(callback) {
+            if (window.html2canvas) {
+                callback();
+                return;
+            }
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+            script.onload = callback;
+            document.head.appendChild(script);
+        }
+
+        // 引入 Chart.js
+        function loadChartJs(callback) {
+            if (window.Chart) {
+                callback();
+                return;
+            }
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+            script.onload = callback;
+            document.head.appendChild(script);
+        }
+
+        function getTodayStr() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        // 环形图数据管理
+        let subjectData = [];
+        let entertainData = [];
+        let studyChart, entertainChart;
+
+        function renderSubjectList() {
+            const list = document.getElementById('subjectList');
+            list.innerHTML = '';
+            subjectData.forEach((item, idx) => {
+                list.innerHTML += `<div class='subject-item'>${item.name}：${item.time} 小时 <button class='remove-btn' onclick='removeSubject(${idx})' title='删除'>×</button></div>`;
+            });
+        }
+        function renderEntertainList() {
+            const list = document.getElementById('entertainList');
+            list.innerHTML = '';
+            entertainData.forEach((item, idx) => {
+                list.innerHTML += `<div class='entertain-item'>${item.name}：${item.time} 小时 <button class='remove-btn' onclick='removeEntertainment(${idx})' title='删除'>×</button></div>`;
+            });
+        }
+        function updateStudyChart() {
+            if (!window.Chart) return;
+            const ctx = document.getElementById('studyChart').getContext('2d');
+            if (studyChart) studyChart.destroy();
+            studyChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: subjectData.map(i=>i.name),
+                    datasets: [{
+                        data: subjectData.map(i=>i.time),
+                        backgroundColor: [
+                            '#355c7d','#ffe066','#6a994e','#f8961e','#264653','#f6e7cb','#b5838d','#43aa8b','#f9c74f','#577590'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    plugins: {legend: {position:'bottom'}},
+                    cutout: '65%',
+                    responsive: false
+                }
+            });
+        }
+        function updateEntertainChart() {
+            if (!window.Chart) return;
+            const ctx = document.getElementById('entertainChart').getContext('2d');
+            if (entertainChart) entertainChart.destroy();
+            entertainChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: entertainData.map(i=>i.name),
+                    datasets: [{
+                        data: entertainData.map(i=>i.time),
+                        backgroundColor: [
+                            '#f8961e','#355c7d','#ffe066','#6a994e','#264653','#f6e7cb','#b5838d','#43aa8b','#f9c74f','#577590'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    plugins: {legend: {position:'bottom'}},
+                    cutout: '65%',
+                    responsive: false
+                }
+            });
+        }
+        function addSubject() {
+            const name = document.getElementById('subjectName').value.trim();
+            const time = parseFloat(document.getElementById('subjectTime').value);
+            if (!name || isNaN(time) || time<=0) return alert('请输入有效的科目和时长');
+            subjectData.push({name, time});
+            document.getElementById('subjectName').value = '';
+            document.getElementById('subjectTime').value = '';
+            renderSubjectList();
+            updateStudyChart();
+        }
+        function removeSubject(idx) {
+            subjectData.splice(idx,1);
+            renderSubjectList();
+            updateStudyChart();
+        }
+        function addEntertainment() {
+            const name = document.getElementById('entertainName').value.trim();
+            const time = parseFloat(document.getElementById('entertainTime').value);
+            if (!name || isNaN(time) || time<=0) return alert('请输入有效的类型和时长');
+            entertainData.push({name, time});
+            document.getElementById('entertainName').value = '';
+            document.getElementById('entertainTime').value = '';
+            renderEntertainList();
+            updateEntertainChart();
+        }
+        function removeEntertainment(idx) {
+            entertainData.splice(idx,1);
+            renderEntertainList();
+            updateEntertainChart();
+        }
+
+        // 本地存储读取
+        window.onload = function() {
+            // 日期选择器初始化
+            const dateInput = document.getElementById('progressDate');
+            function getNowLocalDatetimeStr() {
+                const now = new Date();
+                now.setSeconds(0,0);
+                const offset = now.getTimezoneOffset();
+                const local = new Date(now.getTime() - offset*60000);
+                return local.toISOString().slice(0,16);
+            }
+            if(localStorage.getItem('progressData')) {
+                const data = JSON.parse(localStorage.getItem('progressData'));
+                // 兼容新打卡按钮
+                if(data.task1) toggleCheck('task1');
+                if(data.task2) toggleCheck('task2');
+                document.getElementById('studyTime').value = data.studyTime;
+                document.getElementById('gameTime').value = data.gameTime;
+                document.getElementById('sleepTime').value = data.sleepTime;
+                subjectData = data.subjectData || [];
+                entertainData = data.entertainData || [];
+                if(data.progressDate) {
+                    dateInput.value = data.progressDate;
+                } else {
+                    dateInput.value = getNowLocalDatetimeStr();
+                }
+                // 新增：恢复护肤上午/下午和运动项目
+                if(typeof data.skincareMorning !== 'undefined') document.getElementById('skincare-morning').checked = data.skincareMorning;
+                if(typeof data.skincareAfternoon !== 'undefined') document.getElementById('skincare-afternoon').checked = data.skincareAfternoon;
+                if(typeof data.sportName !== 'undefined') document.getElementById('sportName').value = data.sportName;
+                if(typeof data.sportTime !== 'undefined') document.getElementById('sportTime').value = data.sportTime;
+                // 新增：恢复护肤进度提示
+                updateSkincareProgress();
+                updateSportProgress();
+            } else {
+                dateInput.value = getNowLocalDatetimeStr();
+            }
+            loadChartJs(function() {
+                renderSubjectList();
+                renderEntertainList();
+                updateStudyChart();
+                updateEntertainChart();
+            });
+        }
+
+        // 手机友好打卡按钮切换
+        function toggleCheck(taskId) {
+            const btn = document.getElementById('btn-' + taskId);
+            const checked = btn.classList.toggle('checked');
+            if (btn.classList.contains('checked')) {
+                btn.textContent = '已完成';
+                btn.style.background = 'var(--vangogh-green)';
+                btn.style.color = '#fff';
+            } else {
+                btn.textContent = '未完成';
+                btn.style.background = 'var(--vangogh-yellow)';
+                btn.style.color = '#333';
+            }
+        }
+
+        function saveProgress() {
+            const data = {
+                task1: document.getElementById('btn-task1').classList.contains('checked'),
+                task2: document.getElementById('btn-task2').classList.contains('checked'),
+                skincareMorning: document.getElementById('skincare-morning').checked,
+                skincareAfternoon: document.getElementById('skincare-afternoon').checked,
+                sportName: document.getElementById('sportName').value,
+                sportTime: document.getElementById('sportTime').value,
+                studyTime: document.getElementById('studyTime').value,
+                gameTime: document.getElementById('gameTime').value,
+                sleepTime: document.getElementById('sleepTime').value,
+                subjectData,
+                entertainData,
+                progressDate: document.getElementById('progressDate').value
+            };
+            localStorage.setItem('progressData', JSON.stringify(data));
+            // 让用户输入自定义文件名
+            const defaultName = getTodayStr() + ' 进步统计.png';
+            let fileName = prompt('请输入要保存的文件名（无需加扩展名）：', getTodayStr() + ' 进步统计');
+            if (!fileName) fileName = getTodayStr() + ' 进步统计';
+            fileName = fileName.replace(/[/\\?%*:|"<>]/g, '_') + '.png'; // 防止非法字符
+            loadHtml2Canvas(function() {
+                exportTableAsImage(fileName);
+            });
+        }
+
+        function exportTableAsImage(fileName) {
+            const container = document.querySelector('.container');
+            html2canvas(container, {backgroundColor: '#fff'}).then(function(canvas) {
+                const link = document.createElement('a');
+                link.download = fileName;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function updateSkincareProgress() {
+            const morning = document.getElementById('skincare-morning').checked;
+            const afternoon = document.getElementById('skincare-afternoon').checked;
+            const msg = document.getElementById('skincare-progress-msg');
+            const btn = document.getElementById('btn-task1');
+            if (morning && afternoon) {
+                msg.textContent = '真厉害，你已经全部完成这个任务';
+                btn.textContent = '已完成';
+                btn.classList.add('checked');
+                btn.style.background = 'var(--vangogh-green)';
+                btn.style.color = '#fff';
+            } else if (morning || afternoon) {
+                msg.textContent = '真棒，你已经完成百分之五十了';
+                btn.textContent = '未完成';
+                btn.classList.remove('checked');
+                btn.style.background = 'var(--vangogh-yellow';
+                btn.style.color = '#333';
+            } else {
+                msg.textContent = '';
+                btn.textContent = '未完成';
+                btn.classList.remove('checked');
+                btn.style.background = 'var(--vangogh-yellow)';
+                btn.style.color = '#333';
+            }
+        }
+        function updateSportProgress() {
+            const sportTime = parseFloat(document.getElementById('sportTime').value);
+            const btn = document.getElementById('btn-task2');
+            if (!isNaN(sportTime) && sportTime >= 30) {
+                btn.textContent = '已完成';
+                btn.classList.add('checked');
+                btn.style.background = 'var(--vangogh-green)';
+                btn.style.color = '#fff';
+            } else {
+                btn.textContent = '未完成';
+                btn.classList.remove('checked');
+                btn.style.background = 'var(--vangogh-yellow)';
+                btn.style.color = '#333';
+            }
+        }
+
+        // 动态生成白色星星点
+        function createStars(num) {
+            const starLayer = document.querySelector('.bg-stars');
+            if (!starLayer) return;
+            starLayer.innerHTML = '';
+            for (let i = 0; i < num; i++) {
+                const star = document.createElement('div');
+                const size = Math.random() * 1.8 + 1.2;
+                star.style.position = 'absolute';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.borderRadius = '50%';
+                star.style.background = 'rgba(255,255,255,' + (Math.random() * 0.7 + 0.3) + ')';
+                star.style.boxShadow = `0 0 ${Math.random()*8+2}px #fff`;
+                star.style.opacity = Math.random() * 0.7 + 0.3;
+                starLayer.appendChild(star);
+            }
+        }
+        // 星星闪烁动画
+        function twinkleStars() {
+            const stars = document.querySelectorAll('.bg-stars div');
+            stars.forEach(star => {
+                star.style.opacity = (Math.random() * 0.7 + 0.3).toFixed(2);
+            });
+        }
+        window.addEventListener('DOMContentLoaded', function() {
+            createStars(60);
+            setInterval(twinkleStars, 1200);
+        });
+    </script>
+</body>
+</html>
